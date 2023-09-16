@@ -25,10 +25,11 @@ use Illuminate\Support\Facades\Route;
 Route::post("/login", [PendonorController::class, 'login']);
 Route::get("/logout", [PendonorController::class, 'logout']);
 Route::get("/home", [PendonorController::class, 'home']);
-
 Route::get('/berita', [BeritaController::class, 'show']);
+
+//untuk menu lokasi donor
 Route::get('/jadwal-donor-darah', [JadwalDonorDarahController::class, 'show']);
+
 Route::get('/jadwal-donor-pendonor/{id}/{idl}', [JadwalDonorPendonorController::class, 'check']);
 Route::post('/jadwal-donor-pendonor', [JadwalDonorPendonorController::class, 'daftar']);
-
 Route::get('/jadwal-donor-pendonor/{id}', [JadwalDonorPendonorController::class, 'find']);
