@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\JadwalDonorDarahController;
+use App\Http\Controllers\JadwalDonorPendonorController;
 use App\Http\Controllers\PendonorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,5 +23,12 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::post("/login", [PendonorController::class, 'login']);
-Route::post("/logout", [PendonorController::class, 'logout']);
+Route::get("/logout", [PendonorController::class, 'logout']);
 Route::get("/home", [PendonorController::class, 'home']);
+
+Route::get('/berita', [BeritaController::class, 'show']);
+Route::get('/jadwal-donor-darah', [JadwalDonorDarahController::class, 'show']);
+Route::get('/jadwal-donor-pendonor/{id}/{idl}', [JadwalDonorPendonorController::class, 'check']);
+Route::post('/jadwal-donor-pendonor', [JadwalDonorPendonorController::class, 'daftar']);
+
+Route::get('/jadwal-donor-pendonor/{id}', [JadwalDonorPendonorController::class, 'find']);

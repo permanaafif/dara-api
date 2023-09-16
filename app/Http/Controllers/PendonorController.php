@@ -14,7 +14,7 @@ class PendonorController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login','home']]);
     }
 
     public function login(Request $request){
@@ -101,6 +101,7 @@ class PendonorController extends Controller
         return response()->json([
             'success' => true,
             'user' => [
+                'id' => $user->id,
                 'gambar' => $user->gambar,
                 'nama' => $user->nama,
                 'kode_pendonor'=> $user->kode_pendonor,

@@ -8,7 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class Jadwal_donor_darah extends Authenticatable implements JWTSubject
+
+class Berita extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -17,16 +18,11 @@ class Jadwal_donor_darah extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
-
+    
      protected $fillable = [
-        'lokasi',
-        'alamat',
-        'tanggal_donor',
-        'jam_mulai',
-        'jam_selesai',
-        'kontak',
-        'latitude',
-        'longitude'
+        'gambar',
+        'judul',
+        'deskripsi'
     ];
 
     public function getJWTIdentifier()
