@@ -33,3 +33,5 @@ Route::get('/jadwal-donor-darah', [JadwalDonorDarahController::class, 'show']);
 Route::get('/jadwal-donor-pendonor/{id}/{idl}', [JadwalDonorPendonorController::class, 'check']);
 Route::post('/jadwal-donor-pendonor', [JadwalDonorPendonorController::class, 'daftar']);
 Route::get('/jadwal-donor-pendonor/{id}', [JadwalDonorPendonorController::class, 'find']);
+
+Route::get('/profile', [PendonorController::class, 'showProfile']);
