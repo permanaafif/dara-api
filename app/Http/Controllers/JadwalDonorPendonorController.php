@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Jadwal_donor_darah;
 use App\Models\Jadwal_donor_pendonor;
 use App\Models\Pendonor;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,6 +18,7 @@ class JadwalDonorPendonorController extends Controller
 
     public function find($id)
     {
+        $currentDate = Carbon::today()->format('Y-m-d');
         $pendonor = Jadwal_donor_pendonor::where('id_pendonor', $id)->first();
 
         if (!$pendonor) {
@@ -24,7 +26,6 @@ class JadwalDonorPendonorController extends Controller
         }
 
         $pendonors = Jadwal_donor_pendonor::where('id_pendonor', $id)->get();
-
         $idJadwalPendonorArray = [];
 
         foreach ($pendonors as $jadwalDonor) {
@@ -35,6 +36,25 @@ class JadwalDonorPendonorController extends Controller
 
         foreach ($idJadwalPendonorArray as $a) {
             $jadwal[] = Jadwal_donor_darah::find($a);
+        }
+        $jadwalTerdekat = [];
+        if (!empty($jadwal)) {
+            foreach ($jadwal as $x) {
+                // Mengambil tanggal dari jadwal
+                $tanggalJadwal = Carbon::parse($x->tanggal_donor);
+        
+                // Memeriksa apakah tanggal jadwal lebih besar atau sama dengan tanggal saat ini
+                if ($tanggalJadwal->greaterThanOrEqualTo($currentDate)) {
+                    // Menambahkan jadwal yang dekat ke dalam array $jadwalTerdekat
+                    $jadwalTerdekat[] = $x;
+                }
+            }
+        }
+
+        if(!empty($jadwalTerdekat)){
+            $jadwal = $jadwalTerdekat;
+        }else{
+            $jadwal = null;
         }
 
         return response()->json($jadwal);
