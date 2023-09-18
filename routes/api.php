@@ -35,3 +35,5 @@ Route::post('/jadwal-donor-pendonor', [JadwalDonorPendonorController::class, 'da
 Route::get('/jadwal-donor-pendonor/{id}', [JadwalDonorPendonorController::class, 'find']);
 
 Route::get('/profile', [PendonorController::class, 'showProfile']);
+Route::post('/profile-edit', [PendonorController::class, 'updateProfile']);
+Route::post('/profile-edit-password', [PendonorController::class, 'editPassword']);

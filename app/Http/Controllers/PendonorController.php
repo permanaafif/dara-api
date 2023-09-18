@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\GolonganDarah;
 use App\Models\Jadwal_donor_darah;
 use App\Models\Jadwal_donor_pendonor;
+use App\Models\Pendonor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -138,6 +140,89 @@ class PendonorController extends Controller
                 'kontak_pendonor' => $user->kontak_pendonor,
                 'jenis_kelamin' => $user->jenis_kelamin
                 ]
+        ]);
+    }
+
+    public function updateProfile(Request $request){
+         //set validation
+        $validator = Validator::make($request->all(), [
+        'nama' => 'required',
+        'gambar' => 'image|nullable',
+        'alamat_pendonor'  => 'required',
+        'tanggal_lahir'  => 'required',
+        'jenis_kelamin'  => 'required',
+        'id_golongan_darah'  => 'required',
+        'berat_badan'  => 'required',
+        'kontak_pendonor'  => 'required',
+        ]);
+
+        //if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+        $userId = auth()->guard('api')->user();
+        $user = Pendonor::find($userId->id);
+        
+        $user->nama = $request->nama;
+        $user->alamat_pendonor = $request->alamat_pendonor;
+        $user->tanggal_lahir = $request->tanggal_lahir;
+        $user->jenis_kelamin = $request->jenis_kelamin;
+        $user->id_golongan_darah = $request->id_golongan_darah;
+        $user->berat_badan = $request->berat_badan;
+        $user->kontak_pendonor = $request->kontak_pendonor;
+
+        if($request->gambar && $request->gambar->isValid()){
+            // Hapus gambar lama jika ada
+            if ($user->gambar != '' || $user->gambar != null) {
+                $oldImagePath = public_path('images/' . $user->gambar);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath); // Menghapus gambar lama
+                }
+            }
+            //upload gambar baru
+            $file_name = time().'.'.$request->gambar->extension();
+            $request->gambar->move(public_path('images'),$file_name);
+            $user->gambar = $file_name;
+        }
+        $user->update();
+        return response()->json([
+            'success' => true,
+            'message' => 'berhasil update profile',
+            'data' => $user
+        ]);
+    }
+
+    public function editPassword(Request $request){
+        $userId = auth()->guard('api')->user();
+        $validator = Validator::make($request->all(), [
+            'password_lama' => 'required|min:5',
+            'password_baru' => 'required|min:5',
+        ]);
+    
+        //if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        // Ambil password dari database
+        $user = Pendonor::find($userId->id);
+        $databasePassword = $user->password;
+
+        // Memeriksa apakah password lama yang dimasukkan oleh pengguna cocok dengan password di database
+        if (!Hash::check($request->password_lama, $databasePassword)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Password lama Anda salah'
+            ]);
+        }
+
+        // Jika password lama cocok, maka Anda dapat mengganti password
+        $user->password = Hash::make($request->password_baru);
+        $user->update();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil tukar password'
         ]);
     }
 
