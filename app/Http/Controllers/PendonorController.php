@@ -192,23 +192,8 @@ class PendonorController extends Controller
     }    
 
     public function updateData(Request $request)
-    {
+{
         $userId = auth()->guard('api')->user()->id;
-
-        // Validasi data yang diterima dari request
-        // $validator = Validator::make($request->all(), [
-        //     'nama' => 'required',
-        //     'alamat_pendonor' => 'required',
-        //     // 'tanggal_lahir' => 'required',
-        //     'jenis_kelamin' => 'required',
-        //     'kontak_pendonor' => 'required',
-        //     'berat_badan' => 'required|integer', // Pastikan berat_badan adalah integer
-        // ]);
-
-        // // Jika validasi gagal, kembalikan pesan kesalahan
-        // if ($validator->fails()) {
-        //     return response()->json(['error' => $validator->errors()], 400);
-        // }
 
         // Temukan pengguna berdasarkan ID
         $user = Pendonor::find($userId);
@@ -217,21 +202,43 @@ class PendonorController extends Controller
             return response()->json(['message' => 'Pengguna tidak ditemukan'], 404);
         }
 
-        // Perbarui data pengguna
-        $user->nama = $request->nama;
-        $user->alamat_pendonor = $request->alamat_pendonor;
-        $user->tanggal_lahir = $request->tanggal_lahir;
-        $user->jenis_kelamin = $request->jenis_kelamin;
-        $user->kontak_pendonor = $request->kontak_pendonor;
-        $user->berat_badan = $request->berat_badan;
+        // Buat array kosong untuk data yang akan diupdate
+        $dataToUpdate = [];
 
-        // Simpan perubahan
-        $user->update();
+        // Periksa apakah ada data untuk masing-masing kolom dalam permintaan
+        if ($request->has('nama')) {
+            $dataToUpdate['nama'] = $request->nama;
+        }
+
+        if ($request->has('alamat_pendonor')) {
+            $dataToUpdate['alamat_pendonor'] = $request->alamat_pendonor;
+        }
+
+        if ($request->has('tanggal_lahir')) {
+            $dataToUpdate['tanggal_lahir'] = $request->tanggal_lahir;
+        }
+
+        if ($request->has('jenis_kelamin')) {
+            $dataToUpdate['jenis_kelamin'] = $request->jenis_kelamin;
+        }
+
+        if ($request->has('kontak_pendonor')) {
+            $dataToUpdate['kontak_pendonor'] = $request->kontak_pendonor;
+        }
+
+        if ($request->has('berat_badan')) {
+            $dataToUpdate['berat_badan'] = $request->berat_badan;
+        }
+
+        // Perbarui data pengguna dengan data yang telah difilter
+        $user->update($dataToUpdate);
 
         return response()->json([
             'success' => true,
-             'message' => "berhasil update data"]);
-    }
+            'message' => "Berhasil update data"
+        ]);
+}
+
 
 
 
