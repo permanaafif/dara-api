@@ -143,54 +143,97 @@ class PendonorController extends Controller
         ]);
     }
 
-    public function updateProfile(Request $request){
-         //set validation
+    public function updateGambar(Request $request) {
+        // Validasi request
         $validator = Validator::make($request->all(), [
-        'nama' => 'required',
-        'gambar' => 'image|nullable',
-        'alamat_pendonor'  => 'required',
-        'tanggal_lahir'  => 'required',
-        'jenis_kelamin'  => 'required',
-        'id_golongan_darah'  => 'required',
-        'berat_badan'  => 'required',
-        'kontak_pendonor'  => 'required',
+            'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Sesuaikan dengan jenis gambar yang diterima
         ]);
-
-        //if validation fails
+    
         if ($validator->fails()) {
-            return response()->json($validator->errors());
+            return response()->json($validator->errors(), 400);
         }
-        $userId = auth()->guard('api')->user();
-        $user = Pendonor::find($userId->id);
-        
+    
+        // Mendapatkan ID pengguna dari token
+        $userId = auth()->guard('api')->user()->id;
+    
+        // Temukan pengguna berdasarkan ID
+        $user = Pendonor::find($userId);
+    
+        if (!$user) {
+            return response()->json(['message' => 'Pengguna tidak ditemukan'], 404);
+        }
+    
+        // Simpan nama gambar lama untuk pengecekan
+        $oldImageName = $user->gambar;
+    
+        // Mengunggah gambar baru jika ada
+        if ($request->hasFile('gambar')) {
+            $file = $request->file('gambar');
+            $file_name = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $file_name);
+            $user->gambar = $file_name;
+        }
+    
+        $user->save();
+    
+        // Hapus gambar lama jika gambar baru diunggah
+        if ($request->hasFile('gambar') && $oldImageName) {
+            $oldImagePath = public_path('images/' . $oldImageName);
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Profil berhasil diperbarui',
+            'data' => $user,
+        ]);
+    }    
+
+    public function updateData(Request $request)
+    {
+        $userId = auth()->guard('api')->user()->id;
+
+        // Validasi data yang diterima dari request
+        // $validator = Validator::make($request->all(), [
+        //     'nama' => 'required',
+        //     'alamat_pendonor' => 'required',
+        //     // 'tanggal_lahir' => 'required',
+        //     'jenis_kelamin' => 'required',
+        //     'kontak_pendonor' => 'required',
+        //     'berat_badan' => 'required|integer', // Pastikan berat_badan adalah integer
+        // ]);
+
+        // // Jika validasi gagal, kembalikan pesan kesalahan
+        // if ($validator->fails()) {
+        //     return response()->json(['error' => $validator->errors()], 400);
+        // }
+
+        // Temukan pengguna berdasarkan ID
+        $user = Pendonor::find($userId);
+
+        if (!$user) {
+            return response()->json(['message' => 'Pengguna tidak ditemukan'], 404);
+        }
+
+        // Perbarui data pengguna
         $user->nama = $request->nama;
         $user->alamat_pendonor = $request->alamat_pendonor;
         $user->tanggal_lahir = $request->tanggal_lahir;
         $user->jenis_kelamin = $request->jenis_kelamin;
-        $user->id_golongan_darah = $request->id_golongan_darah;
-        $user->berat_badan = $request->berat_badan;
         $user->kontak_pendonor = $request->kontak_pendonor;
+        $user->berat_badan = $request->berat_badan;
 
-        if($request->gambar && $request->gambar->isValid()){
-            // Hapus gambar lama jika ada
-            if ($user->gambar != '' || $user->gambar != null) {
-                $oldImagePath = public_path('images/' . $user->gambar);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath); // Menghapus gambar lama
-                }
-            }
-            //upload gambar baru
-            $file_name = time().'.'.$request->gambar->extension();
-            $request->gambar->move(public_path('images'),$file_name);
-            $user->gambar = $file_name;
-        }
+        // Simpan perubahan
         $user->update();
+
         return response()->json([
             'success' => true,
-            'message' => 'berhasil update profile',
-            'data' => $user
-        ]);
+             'message' => "berhasil update data"]);
     }
+
+
 
     public function editPassword(Request $request){
         $userId = auth()->guard('api')->user();
