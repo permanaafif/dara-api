@@ -272,7 +272,7 @@ class PendonorController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Berhasil tukar password'
+            'message' => 'Berhasil ganti password'
         ]);
     }
 
