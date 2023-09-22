@@ -3,6 +3,7 @@
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\JadwalDonorDarahController;
 use App\Http\Controllers\JadwalDonorPendonorController;
+use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\mailController;
 use App\Http\Controllers\PendonorController;
 use Illuminate\Http\Request;
@@ -39,3 +40,7 @@ Route::get('/profile', [PendonorController::class, 'showProfile']);
 Route::post('/profile-edit-gambar', [PendonorController::class, 'updateGambar']);
 Route::post('/profile-edit-data', [PendonorController::class, 'updateData']);
 Route::post('/profile-edit-password', [PendonorController::class, 'editPassword']);
+
+Route::post('/otp/send', [LupaPasswordController::class, 'sendOtp']);
+Route::post('/otp/check', [LupaPasswordController::class, 'checkOtp']);
+Route::post('/otp/reset-password', [LupaPasswordController::class, 'resetPassword']);
