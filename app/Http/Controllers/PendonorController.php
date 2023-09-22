@@ -129,6 +129,7 @@ class PendonorController extends Controller
                 'id' => $user->id,
                 'gambar' => $user->gambar,
                 'nama' => $user->nama,
+                'email' => $user->email,
                 'kode_pendonor'=> $user->kode_pendonor,
                 'id_golongan_darah' => [
                     'id' => $goldar->id,
@@ -208,6 +209,10 @@ class PendonorController extends Controller
         // Periksa apakah ada data untuk masing-masing kolom dalam permintaan
         if ($request->has('nama')) {
             $dataToUpdate['nama'] = $request->nama;
+        }
+
+        if ($request->has('email')) {
+            $dataToUpdate['email'] = $request->email;
         }
 
         if ($request->has('alamat_pendonor')) {

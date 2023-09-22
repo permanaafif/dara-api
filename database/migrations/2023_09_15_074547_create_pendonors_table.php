@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("gambar",255)->nullable();
             $table->string('nama', 100)->nullable(false);
             $table->string('kode_pendonor', 10)->nullable(false)->unique();
+            // $table->string('email', 100)->nullable(false)->unique();
             $table->date('tanggal_lahir')->nullable(false);
             $table->enum('jenis_kelamin',['laki-laki','perempuan'])->nullable(false);
             $table->unsignedBigInteger('id_golongan_darah')->nullable(false);

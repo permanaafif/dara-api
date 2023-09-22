@@ -21,6 +21,7 @@ class Pendonor extends Authenticatable implements JWTSubject
     protected $fillable = [
         'gambar',
         'nama',
+        'email',
         'tanggal_lahir',
         'kode_pendonor',
         'jenis_kelamin',

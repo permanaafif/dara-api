@@ -3,6 +3,7 @@
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\JadwalDonorDarahController;
 use App\Http\Controllers\JadwalDonorPendonorController;
+use App\Http\Controllers\mailController;
 use App\Http\Controllers\PendonorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
