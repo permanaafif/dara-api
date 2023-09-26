@@ -12,7 +12,7 @@ class LupaPassword extends Model
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'lupa_passwords';
-    protected $primaryKey = 'email';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [

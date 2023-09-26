@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('lupa_passwords', function (Blueprint $table) {
+            $table->id();
             $table->string('email',100)->unique();
             $table->string('token',100)->unique();
             $table->string('otp',4);
